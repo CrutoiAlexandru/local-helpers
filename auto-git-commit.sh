@@ -7,7 +7,7 @@ git add .
 # Change this to your local AI command.
 # Example for Ollama: MODEL="llama3" ; CMD="ollama run $MODEL"
 # Example for LM Studio: CMD="curl -s -X POST http://localhost:1234/v1/completions -H 'Content-Type: application/json' -d"
-CMD="ollama run deepseek-v3.1:671b-cloud"
+CMD="ollama run qwen3-coder:480b-cloud"
 
 # === COLLECT DATA ===
 BRANCH=$(git branch --show-current)
@@ -34,11 +34,11 @@ Your task is to generate a commit message following these rules:
    - chore: maintenance/tooling
 
 2. Format:
-<type>(optional-scope): <short summary of the change>
+<type>: <short summary of the change>
 
-<1–3 lines of details or context>
+<1–3 lines of short details or short context>
 
-(optional) SCRUM-<number> (if present in branch name)
+(optional) SCRUM-<number> (only if present in branch name, otherwise omit)
 
 Rules:
 - First line ≤ 72 characters
