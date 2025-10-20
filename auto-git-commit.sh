@@ -44,6 +44,7 @@ Rules:
 - First line ≤ 72 characters
 - Use imperative mood (“add”, “fix”, “update”)
 - If the branch name contains SCRUM-<number>, append it as the last line.
+- Return only the commit message, no explanations or additional text.
 EOF
 )
 
