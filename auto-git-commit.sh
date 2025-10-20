@@ -7,7 +7,7 @@ git add .
 # Change this to your local AI command.
 # Example for Ollama: MODEL="llama3" ; CMD="ollama run $MODEL"
 # Example for LM Studio: CMD="curl -s -X POST http://localhost:1234/v1/completions -H 'Content-Type: application/json' -d"
-CMD="ollama run qwen3-coder:480b-cloud"
+CMD="ollama run qwen2.5-coder:0.5b"
 
 # === COLLECT DATA ===
 BRANCH=$(git branch --show-current)
