@@ -35,8 +35,8 @@ Your task is to generate a commit message following these rules:
 
 2. Format:
 <type>: <short summary of the change>
-
-<1–3 lines of short details or short context>
+<endline>
+<1–3 lines of details or context>
 
 (optional) SCRUM-<number> (only if present in branch name, otherwise omit)
 
