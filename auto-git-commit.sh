@@ -61,6 +61,7 @@ Rules:
 - First line ≤ 72 characters
 - Use imperative mood ("add", "fix", "update")
 - If the branch name contains a ticket number (SCRUM-ddd, dddd, OBS-ddd, or similar formats), append it as the last line.
+- If the ticket number is only made of digits, prefix # to it
 - Return only the commit message, no explanations or additional text.
 EOF
 )
