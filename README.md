@@ -2,7 +2,7 @@
 These are some local helpers I use during coding to move faster.
 
 ## Prerequisites
-Install ollama https://ollama.com/download/mac
+Install ollama https://ollama.com/download/mac and run `ollama signin`
 
 ## How to use
 Just run `python3 setup.py` and you're good to go.
