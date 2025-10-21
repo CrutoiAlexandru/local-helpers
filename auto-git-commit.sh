@@ -55,12 +55,12 @@ Your task is to generate a commit message following these rules:
 <endline>
 <1–3 lines of details or context>
 
-(optional) SCRUM-<number> (only if present in branch name, otherwise omit)
+(optional) TICKET-NUMBER (only if present in branch name, otherwise omit)
 
 Rules:
 - First line ≤ 72 characters
 - Use imperative mood ("add", "fix", "update")
-- If the branch name contains SCRUM-<number>, append it as the last line.
+- If the branch name contains a ticket number (SCRUM-ddd, dddd, OBS-ddd, or similar formats), append it as the last line.
 - Return only the commit message, no explanations or additional text.
 EOF
 )
