@@ -1,6 +1,52 @@
 #!/bin/bash
 set -e
 
+# Help function
+show_help() {
+    cat << 'EOF'
+Usage: auto-git-commit.sh [OPTIONS] [CONTEXT]
+
+Automatically generates git commit messages using AI based on staged changes.
+
+OPTIONS:
+    -h, --help          Show this help message and exit
+
+ARGUMENTS:
+    CONTEXT             Additional context for the commit message generation
+
+EXAMPLES:
+    auto-git-commit.sh                    # Generate commit message without additional context
+    auto-git-commit.sh "Fixing login bug" # Generate commit message with context about login bug
+    auto-git-commit.sh --help             # Show this help message
+
+FEATURES:
+    - Uses Conventional Commits specification
+    - Analyzes staged files and git diff
+    - Supports optional additional context as direct argument
+    - Configurable AI model command
+EOF
+    exit 0
+}
+
+# Parse command line arguments
+ADDITIONAL_CONTEXT=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            echo "Use -h for help"
+            exit 1
+            ;;
+        *)
+            ADDITIONAL_CONTEXT="$1"
+            shift
+            ;;
+    esac
+done
+
 git add .
 
 # === CONFIGURATION ===
@@ -78,9 +124,21 @@ DIFF:
 
 $DIFF"
 
+# Add additional context if provided
+if [ -n "$ADDITIONAL_CONTEXT" ]; then
+    INPUT="$INPUT
+
+ADDITIONAL CONTEXT:
+$ADDITIONAL_CONTEXT"
+fi
+
 # === CALL AI ===
 
 echo "🤖 Generating commit message..."
+if [ -n "$ADDITIONAL_CONTEXT" ]; then
+    echo "📋 Additional context provided: $ADDITIONAL_CONTEXT"
+fi
+
 MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | $CMD)
 
 # === CLEAN OUTPUT ===
