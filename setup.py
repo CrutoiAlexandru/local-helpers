@@ -26,18 +26,47 @@ class ShellConfigManager:
 
         try:
             with open(alias_file, "r") as f:
-                for line in f:
+                for line_number, line in enumerate(f, 1):
                     line = line.strip()
-                    if line and not line.startswith(
-                        "#"
-                    ):  # Skip empty lines and comments
-                        if "=" in line:
-                            alias_name, command = line.split("=", 1)
-                            alias_name = alias_name.strip()
-                            command = command.strip()
+                    # Skip empty lines and comments
+                    if not line or line.startswith("#"):
+                        continue
+
+                    # Handle function definitions (containing (){)
+                    if "(){" in line:
+                        # For function definitions, use the entire line as the command
+                        # Extract alias name (everything before (){)
+                        alias_name = line.split("(){", 1)[0].strip()
+                        aliases[alias_name] = line
+                    elif "=" in line:
+                        # Split on the first = only
+                        parts = line.split("=", 1)
+                        if len(parts) == 2:
+                            alias_name = parts[0].strip()
+                            command = parts[1].strip()
+                            # Remove surrounding quotes if present
+                            if (command.startswith('"') and command.endswith('"')) or (
+                                command.startswith("'") and command.endswith("'")
+                            ):
+                                command = command[1:-1]
                             aliases[alias_name] = command
+                        else:
+                            print(
+                                f"Warning: Invalid alias format on line {line_number}: {line}"
+                            )
+                    else:
+                        print(
+                            f"Warning: Invalid alias format on line {line_number}: {line}"
+                        )
+
         except Exception as e:
             print(f"Error reading alias.txt: {e}")
+
+        # Validate that we loaded some aliases
+        if not aliases:
+            print("Warning: No valid aliases found in alias.txt")
+        else:
+            print(f"Loaded {len(aliases)} aliases from alias.txt")
 
         return aliases
 
@@ -54,16 +83,21 @@ class ShellConfigManager:
         content.append("")
 
         for alias_name, command in self.aliases.items():
-            # Check if command references a script file
-            if command.endswith(".sh") or command.endswith(".py"):
-                script_path = self.get_script_absolute_path(command)
-                if command.endswith(".sh"):
-                    content.append(f'alias {alias_name}="{script_path}"')
-                elif command.endswith(".py"):
-                    content.append(f'alias {alias_name}="python3 {script_path}"')
+            # Check if command is a function definition (contains (){)
+            if "(){" in command:
+                # For function definitions, use the complete definition
+                content.append(command)
             else:
-                # For commands that are not script files (like 'gitc; git push')
-                content.append(f'alias {alias_name}="{command}"')
+                # Check if command references a script file
+                if command.endswith(".sh") or command.endswith(".py"):
+                    script_path = self.get_script_absolute_path(command)
+                    if command.endswith(".sh"):
+                        content.append(f'alias {alias_name}="{script_path}"')
+                    elif command.endswith(".py"):
+                        content.append(f'alias {alias_name}="python3 {script_path}"')
+                else:
+                    # For regular commands, create an alias
+                    content.append(f'alias {alias_name}="{command}"')
 
         content.append("")
         content.append(self.markers["end"])
@@ -151,7 +185,9 @@ class ShellConfigManager:
 
         print("Aliases to be created:")
         for alias_name, command in self.aliases.items():
-            if command.endswith(".sh") or command.endswith(".py"):
+            if "(){" in command:
+                print(f"  {alias_name}() (function)")
+            elif command.endswith(".sh") or command.endswith(".py"):
                 script_path = self.get_script_absolute_path(command)
                 if command.endswith(".sh"):
                     print(f"  {alias_name} -> {script_path}")
