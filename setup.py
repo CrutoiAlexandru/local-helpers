@@ -154,7 +154,7 @@ class ShellConfigManager:
             new_content = alias_content
 
         # Write updated content
-        config_path.write_text(new_content + "\n")
+        config_path.write_text(new_content)
         print(f"Updated {config_path} with new aliases")
 
     def verify_scripts_exist(self):
