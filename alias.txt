@@ -1,3 +1,4 @@
 gitc=auto-git-commit.sh
 gitp(){ gitc $*; git push; }
 dirdocgen=dir-docs-generator.py
+test
