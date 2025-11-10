@@ -54,7 +54,7 @@ git add .
 
 # Example for Ollama: MODEL="llama3" ; CMD="ollama run $MODEL"
 # Example for LM Studio: CMD="curl -s -X POST http://localhost:1234/v1/completions -H 'Content-Type: application/json' -d"
-CMD="ollama run deepseek-v3.1:671b-cloud" #qwen2.5-coder:0.5b"
+CMD="ollama run deepseek-v3.1:671b-cloud --hidethinking" #qwen2.5-coder:0.5b"
 
 # === COLLECT DATA ===
 BRANCH=$(git branch --show-current)
