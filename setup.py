@@ -222,15 +222,15 @@ class ShellConfigManager:
 
         if self.bashrc_path.exists() or input("Create .bashrc? (y/n): ").lower() == "y":
             self.update_shell_config(self.bashrc_path)
-            print(f"✓ Bash configuration updated")
+            print(f"Bash configuration updated")
         else:
-            print("✓ Skipping .bashrc")
+            print("Skipping .bashrc")
 
         if self.zshrc_path.exists() or input("Create .zshrc? (y/n): ").lower() == "y":
             self.update_shell_config(self.zshrc_path)
-            print(f"✓ Zsh configuration updated")
+            print(f"Zsh configuration updated")
         else:
-            print("✓ Skipping .zshrc")
+            print("Skipping .zshrc")
 
         print("\nSetup complete!")
         print("\nTo use the new aliases, run:")
