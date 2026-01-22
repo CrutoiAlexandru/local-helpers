@@ -10,6 +10,7 @@ Automatically generates git commit messages using AI based on staged changes.
 
 OPTIONS:
     -h, --help          Show this help message and exit
+    -l, --local         Use local reasoning model (mistral) instead of cloud model
 
 ARGUMENTS:
     CONTEXT             Additional context for the commit message generation
@@ -30,10 +31,15 @@ EOF
 
 # Parse command line arguments
 ADDITIONAL_CONTEXT=""
+USE_LOCAL_MODEL=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         -h|--help)
             show_help
+            ;;
+        -l|--local)
+            USE_LOCAL_MODEL=true
+            shift
             ;;
         -*)
             echo "Unknown option: $1"
@@ -54,7 +60,11 @@ git add .
 
 # Example for Ollama: MODEL="llama3" ; CMD="ollama run $MODEL"
 # Example for LM Studio: CMD="curl -s -X POST http://localhost:1234/v1/completions -H 'Content-Type: application/json' -d"
-CMD="ollama run deepseek-v3.1:671b-cloud --think=false" #qwen2.5-coder:0.5b"
+if [ "$USE_LOCAL_MODEL" = true ]; then
+    CMD="ollama run gemma3:1b --hidethinking"
+else
+    CMD="ollama run deepseek-v3.1:671b-cloud --think=false"
+fi
 
 # === COLLECT DATA ===
 BRANCH=$(git branch --show-current)
