@@ -56,14 +56,11 @@ done
 git add .
 
 # === CONFIGURATION ===
-# Change this to your local AI command.
+# Prefer GitHub Copilot CLI if available, otherwise fall back to Ollama
 
-# Example for Ollama: MODEL="llama3" ; CMD="ollama run $MODEL"
-# Example for LM Studio: CMD="curl -s -X POST http://localhost:1234/v1/completions -H 'Content-Type: application/json' -d"
-if [ "$USE_LOCAL_MODEL" = true ]; then
-    CMD="ollama run gemma3:1b --hidethinking"
-else
-    CMD="ollama run deepseek-v3.1:671b-cloud --think=false"
+USE_COPILOT=false
+if command -v copilot &> /dev/null; then
+    USE_COPILOT=true
 fi
 
 # === COLLECT DATA ===
@@ -149,11 +146,22 @@ if [ -n "$ADDITIONAL_CONTEXT" ]; then
     echo "📋 Additional context provided: $ADDITIONAL_CONTEXT"
 fi
 
-MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | $CMD)
+if [ "$USE_COPILOT" = true ]; then
+    echo "🔵 Using GitHub Copilot CLI (gpt-4.1)"
+    FULL_INPUT=$(echo -e "$PROMPT\n\n$INPUT")
+    MESSAGE=$(copilot -p "$FULL_INPUT" --model gpt-4.1 -s --allow-all-tools 2>/dev/null)
+elif [ "$USE_LOCAL_MODEL" = true ]; then
+    echo "🟠 Using Ollama (gemma3:1b)"
+    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run gemma3:1b 2>/dev/null)
+else
+    echo "🟠 Using Ollama (deepseek-v3.1:671b-cloud)"
+    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run deepseek-v3.1:671b-cloud 2>/dev/null)
+fi
 
 # === CLEAN OUTPUT ===
-
+# Remove code blocks, thinking tags, and clean up whitespace
 MESSAGE=$(echo "$MESSAGE" | sed '/^```/d' | sed 's/^Output://i' | sed '/^$/N;/^\n$/D')
+MESSAGE=$(echo "$MESSAGE" | sed '/<think>/,/<\/think>/d' | sed '/^Thinking:/,/^$/d' | sed '/^\[thinking\]/,/^\[\/thinking\]/d')
 
 echo
 echo "📝 Commit message preview:"
