@@ -152,10 +152,10 @@ if [ "$USE_COPILOT" = true ]; then
     MESSAGE=$(copilot -p "$FULL_INPUT" --model gpt-4.1 -s --allow-all-tools 2>/dev/null)
 elif [ "$USE_LOCAL_MODEL" = true ]; then
     echo "🟠 Using Ollama (gemma3:1b)"
-    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run gemma3:1b 2>/dev/null)
+    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run gemma3:1b --hidethinking 2>/dev/null)
 else
     echo "🟠 Using Ollama (deepseek-v3.1:671b-cloud)"
-    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run deepseek-v3.1:671b-cloud 2>/dev/null)
+    MESSAGE=$(echo -e "$PROMPT\n\n$INPUT" | ollama run deepseek-v3.1:671b-cloud --hidethinking --think=false 2>/dev/null)
 fi
 
 # === CLEAN OUTPUT ===
